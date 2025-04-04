@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Past;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.util.Comparator;
@@ -17,9 +18,14 @@ import java.util.TreeSet;
 import static jakarta.persistence.ConstraintMode.NO_CONSTRAINT;
 
 
+
 @Data
 @Entity
-@Table(name = "students")
+@Table(name = "students",
+        uniqueConstraints = @UniqueConstraint(
+                columnNames = "email"
+        )
+)
 public class Student {
 
     @Id
@@ -36,8 +42,9 @@ public class Student {
     @Email(message = "Invalid email format")
     private String email;
 
-    @Column(name = "date_of_birth")
+    @Column(name = "date_of_birth", nullable = false, columnDefinition = "DATE")
     @Past(message = "Date of birth must be in the past")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateOfBirth;
 
     @CreationTimestamp
@@ -48,7 +55,10 @@ public class Student {
     @Column(name = "updated_at")
     private Date updatedAt;
 
-    @ManyToMany
+    @ManyToMany(
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+            fetch = FetchType.LAZY
+    )
     @JoinTable(
             name = "student_course",
             joinColumns = @JoinColumn(name = "student_id"),
