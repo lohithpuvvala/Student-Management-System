@@ -45,7 +45,10 @@ public class Course {
     @Column(name = "updated_at")
     private Date updatedAt;
 
-    @ManyToMany
+    @ManyToMany(
+            mappedBy = "courses",
+            fetch = FetchType.LAZY
+    )
     @JoinTable(
             name = "student_course",
             joinColumns = @JoinColumn(name = "course_id"),
