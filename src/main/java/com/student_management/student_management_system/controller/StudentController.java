@@ -9,13 +9,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.Reader;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/students")
 public class StudentController {
-    private StudentService studentService;
+    private final StudentService studentService;
 
     @Autowired
     public StudentController(StudentService studentService) {
@@ -24,7 +23,7 @@ public class StudentController {
 
     @GetMapping()
     @Transactional(readOnly = true)
-    public ResponseEntity<List<Student>> getAllStudent(Reader reader){
+    public ResponseEntity<List<Student>> getAllStudent(){
         List<Student> students = studentService.getAllStudents();
         return new ResponseEntity<>(students, HttpStatus.OK);
     }
